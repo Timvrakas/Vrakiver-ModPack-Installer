@@ -20,39 +20,39 @@ public class GUI extends JFrame {
 	private static final int HEIGHT = 100;
 	private JButton update;
 	private ChangeButtonHandler Handler;
-	private JLabel msg;
-	private JLabel doneversion;
-	private JLabel newversion;
-	private JLabel dv;
-	private JLabel nv;
-	public static String currentVersion = "0";
-	public static String version = "0";
+	private JLabel message;
+	private JLabel currentVersionTextLabel;
+	private JLabel newVersionTextLabel;
+	private JLabel currentVersionLabel;
+	private JLabel newVersionLabel;
+	public static String currentVersion = "None";
+	public static String newVersion = "Loading...";
 
 	public GUI() {
-		setTitle("Vrakiver Downloader");
+		setTitle("Vrakiver ModPack Installer");
 		Container pane = getContentPane();
 		pane.setLayout(new GridLayout(3, 2));
 
-		msg = new JLabel("");
-		doneversion = new JLabel("Current Version:", SwingConstants.CENTER);
-		newversion = new JLabel("Latest Version:", SwingConstants.CENTER);
-		dv = new JLabel("None");
-		nv = new JLabel("0");
+		message = new JLabel("");
+		currentVersionTextLabel = new JLabel("Current Version:", SwingConstants.CENTER);
+		newVersionTextLabel = new JLabel("Latest Version:", SwingConstants.CENTER);
+		currentVersionLabel = new JLabel(currentVersion);
+		newVersionLabel = new JLabel(newVersion);
 		update = new JButton("Install ModPack");
 		Handler = new ChangeButtonHandler();
 		update.addActionListener(Handler);
 
-		pane.add(doneversion);
-		pane.add(dv);
-		pane.add(newversion);
-		pane.add(nv);
+		pane.add(currentVersionTextLabel);
+		pane.add(currentVersionLabel);
+		pane.add(newVersionTextLabel);
+		pane.add(newVersionLabel);
 		pane.add(update);
-		pane.add(msg);
+		pane.add(message);
 		setSize(WIDTH, HEIGHT);
 		setVisible(true);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		dv.setText(getCurrentVersion());
-		nv.setText(getVersion());
+		currentVersionLabel.setText(getCurrentVersion());
+		newVersionLabel.setText(getVersion());
 	}
 
 	private class ChangeButtonHandler implements ActionListener {
@@ -60,28 +60,28 @@ public class GUI extends JFrame {
 			try {
 				final URL link = new URL(new URL(Main.link), Main.name + ".zip");
 				final File zip = new File(Main.MCDir(), Main.name + ".zip");
-				msg.setText("Deleting");
+				message.setText("Deleting");
 				if (zip.exists())
 					zip.delete();
 				Runnable r = new Runnable() {
 					public void run() {
 						try {
 							Main.get(link, zip);
-							msg.setText("Installing");
+							message.setText("Installing");
 							Main.install(zip);
-							msg.setText("Done!");
+							message.setText("Done!");
 						} catch (IOException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
-						dv.setText(getCurrentVersion());
-						nv.setText(getVersion());
+						currentVersionLabel.setText(getCurrentVersion());
+						newVersionLabel.setText(getVersion());
 						Main.receipt();
 					}
 				};
 				Thread t = new Thread(r);
 				t.start();
-				msg.setText("Downloading");
+				message.setText("Downloading");
 
 			} catch (IOException e1) {
 				// TODO Auto-generated catch block
@@ -96,14 +96,14 @@ public class GUI extends JFrame {
 			URL versionFile = new URL(new URL(Main.link), Main.name
 					+ "_version.txt");
 			InputStream in = versionFile.openStream();
-			version = IOUtils.toString(in);
+			newVersion = IOUtils.toString(in);
 			IOUtils.closeQuietly(in);
 
 		} catch (IOException e) {
 
 			e.printStackTrace();
 		}
-		return version;
+		return newVersion;
 	}
 
 	private static String getCurrentVersion() {

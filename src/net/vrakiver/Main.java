@@ -165,7 +165,7 @@ public class Main {
 		try {
 			versionFile.createNewFile();
 			PrintWriter out = new PrintWriter(versionFile);
-			out.print(GUI.version);
+			out.print(GUI.newVersion);
 			out.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
